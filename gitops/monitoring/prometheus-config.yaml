@@ -17,11 +17,11 @@ data:
       metrics_path: /metrics
       static_configs:
       - targets:
-        - solace-producer.solace.svc.cluster.local:8080
+        - solace-producer.solace.svc.cluster.local:4445
 
     - job_name: "solace-consumer"
       metrics_path: /metrics
       static_configs:
       - targets:
-        - solace-consumer.solace.svc.cluster.local:8080
+        - solace-consumer.solace.svc.cluster.local:4444
 

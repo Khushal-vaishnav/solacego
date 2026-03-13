@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: solace-consumer-scale
+  namespace: solace
+spec:
+  scaleTargetRef:
+    name: solace-consumer
+
+  minReplicaCount: 1
+  maxReplicaCount: 5
+
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus.monitoring.svc.cluster.local:9090
+      metricName: solace_message_lag
+      threshold: "100"
+      query: max(solace_message_lag)
