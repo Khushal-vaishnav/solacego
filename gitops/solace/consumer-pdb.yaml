@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: solace-consumer-pdb
+  namespace: solace
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: solace-consumer

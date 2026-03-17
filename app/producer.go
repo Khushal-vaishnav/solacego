@@ -56,11 +56,11 @@ func main() {
 	initMetrics()
 
 	cfg := Config{
-		Host:     getenv("SOLACE_HOST", "tcp://127.0.0.1:55555"),
-		VPN:      getenv("SOLACE_VPN", "vpn1"),
-		User:     getenv("SOLACE_USERNAME", "tickpublisher"),
-		Password: getenv("SOLACE_PASSWORD", "tickpublisher"),
-		Topic:    getenv("TOPIC", "stock/tick/publisher"),
+		Host:     getenv("SOLACE_HOST", "tcp://172.18.0.2:30555"),
+		VPN:      getenv("SOLACE_VPN", "go"),
+		User:     getenv("SOLACE_USERNAME", "golang"),
+		Password: getenv("SOLACE_PASSWORD", "golang"),
+		Topic:    getenv("TOPIC", "golang/topic/a"),
 	}
 
 		go startMetricsServer()
@@ -83,8 +83,8 @@ func initMetrics() {
 
 func startMetricsServer() {
 	http.Handle("/metrics", promhttp.Handler())
-	logger.Info("metrics server started", zap.String("port", "8080"))
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	logger.Info("metrics server started", zap.String("port", "4445"))
+	log.Fatal(http.ListenAndServe(":4445", nil))
 }
 
 /*
@@ -161,7 +161,7 @@ func runProducerLoop(
 			}
 
 			publishedTotal.Inc()
-			time.Sleep(1 * time.Millisecond)
+			time.Sleep(0)
 		}
 	}()
 }

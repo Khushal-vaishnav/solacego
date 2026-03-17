@@ -55,11 +55,11 @@ func main() {
 	initMetrics()
 
 	cfg := Config{
-		Host:     getenv("SOLACE_HOST", "tcp://127.0.0.1:55555"),
-		VPN:      getenv("SOLACE_VPN", "vpn1"),
-		User:     getenv("SOLACE_USERNAME", "admin"),
-		Password: getenv("SOLACE_PASSWORD", "admin"),
-		Queue:    getenv("QUEUE", "q.tick.receiver"),
+		Host:     getenv("SOLACE_HOST", "tcp://172.18.0.3:55555"),
+		VPN:      getenv("SOLACE_VPN", "go"),
+		User:     getenv("SOLACE_USERNAME", "golang"),
+		Password: getenv("SOLACE_PASSWORD", "golang"),
+		Queue:    getenv("QUEUE", "q.go"),
 	}
 
 	go startMetricsServer()
@@ -82,8 +82,8 @@ func initMetrics() {
 
 func startMetricsServer() {
 	http.Handle("/metrics", promhttp.Handler())
-	logger.Info("metrics server started", zap.String("port", "8080"))
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	logger.Info("metrics server started", zap.String("port", "4444"))
+	log.Fatal(http.ListenAndServe(":4444", nil))
 }
 
 /*
@@ -131,7 +131,7 @@ func startConsumer(
 	queueName string,
 ) solace.PersistentMessageReceiver {
 
-	queue := resource.QueueDurableExclusive(queueName)
+	queue := resource.QueueDurableNonExclusive(queueName)
 
 	receiver, err := service.
 		CreatePersistentMessageReceiverBuilder().
@@ -152,7 +152,7 @@ func startConsumer(
 	}
 
 	receiver.ReceiveAsync(func(msg message.InboundMessage) {
-		time.Sleep(10 * time.Millisecond)
+	//		time.Sleep(10 * time.Millisecond)
 		consumedTotal.Inc()
 	})
 

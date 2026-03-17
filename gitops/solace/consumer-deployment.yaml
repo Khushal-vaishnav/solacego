@@ -13,14 +13,37 @@ spec:
       labels:
         app: solace-consumer
     spec:
-      imagePullSecrets:
-      - name: ghcr-secret
       containers:
       - name: consumer
-        image: ghcr.io/khushal-vaishnav/solace-consumer:1.0
+        image: ghcr.io/khushal-vaishnav/solace-consumer:0.1
+
+        ports:
+        - containerPort: 4444
+
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 4444
+          initialDelaySeconds: 10
+          periodSeconds: 10
+
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 4444
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+
         envFrom:
         - configMapRef:
             name: solace-app-config
         - secretRef:
             name: solace-app-secret
-

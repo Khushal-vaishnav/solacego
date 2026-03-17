@@ -7,6 +7,6 @@ spec:
   selector:
     app: solace-consumer
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 4444
+    targetPort: 4444
 
