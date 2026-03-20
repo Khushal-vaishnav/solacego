@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: solacedc
+  namespace: solace
+spec:
+  serviceName: solacedc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solacedc
+  template:
+    metadata:
+      labels:
+        app: solacedc
+    spec:
+      securityContext:
+        fsGroup: 0
+      containers:
+      - name: solace
+        image: solace/solace-pubsub-standard
+        ports:
+        - containerPort: 55555
+        - containerPort: 8080
+        - containerPort: 1943
+        - containerPort: 2222
+        env:
+        - name: username_admin_globalaccesslevel
+          value: admin
+        - name: username_admin_password
+          value: admin
+        resources:
+          requests:
+            memory: "3Gi"
+            cpu: "500m"
+          limits:
+            memory: "6Gi"
+            cpu: "2"
+        volumeMounts:
+        - name: solace-storage
+          mountPath: /var/lib/solace
+        - name: dshm
+          mountPath: /dev/shm
+      volumes:
+      - name: solace-storage
+        persistentVolumeClaim:
+          claimName: solace-dc-pvc
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
